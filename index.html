@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apresentação Embaixador AWS - Univali</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+            color: #ffffff;
+            overflow: hidden; /* Prevent scrolling */
+        }
+
+        /* Cores Base */
+        .aws-orange { color: #FF9900; }
+        .bg-aws-orange { background-color: #FF9900; }
+        .border-aws-orange { border-color: #FF9900; }
+        .univali-blue { color: #00305E; }
+
+        /* --- TEMA GALÁCTICO: Estrelas e Nebulosas --- */
+        .starfield {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 40px 70px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 90px 160px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 150px 40px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 200px 180px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 250px 90px, #ffffff, rgba(0,0,0,0));
+            background-repeat: repeat;
+            background-size: 300px 300px;
+            opacity: 0.3;
+            z-index: -3;
+            animation: twinkle 5s infinite alternate ease-in-out;
+        }
+
+        .nebula {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.4;
+            z-index: -2;
+            animation: float 20s infinite ease-in-out alternate;
+        }
+        .nebula-1 { width: 500px; height: 500px; background: #FF9900; top: -10%; left: -10%; }
+        .nebula-2 { width: 600px; height: 600px; background: #4a00e0; bottom: -20%; right: -10%; animation-delay: -5s; }
+        .nebula-3 { width: 400px; height: 400px; background: #00305E; top: 40%; left: 30%; animation-delay: -10s; }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(60px, 40px) scale(1.1); }
+        }
+        @keyframes twinkle {
+            0% { opacity: 0.1; transform: scale(1); }
+            100% { opacity: 0.5; transform: scale(1.02); }
+        }
+
+        /* Efeitos de Glow / Texto */
+        .glow-text { text-shadow: 0 0 20px rgba(255, 153, 0, 0.7); }
+        .glow-box { box-shadow: 0 0 30px rgba(255, 153, 0, 0.2); }
+
+        /* Comportamento dos Slides */
+        .slide {
+            opacity: 0;
+            transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateY(40px) scale(0.95);
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: auto;
+            z-index: 10;
+        }
+
+        /* Glassmorphism Espacial (Cards mais transparentes e com bordas brilhantes) */
+        .glass-card {
+            background: rgba(10, 15, 30, 0.5);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(255, 255, 255, 0.02);
+            border-radius: 1rem;
+            transition: all 0.4s ease;
+        }
+        .glass-card:hover {
+            border-color: rgba(255, 153, 0, 0.4);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6), inset 0 0 30px rgba(255, 153, 0, 0.1);
+            transform: translateY(-5px);
+        }
+    </style>
+</head>
+<body class="h-screen w-screen flex flex-col relative">
+
+    <!-- Elementos Galácticos de Fundo -->
+    <div class="starfield"></div>
+    <div class="nebula nebula-1"></div>
+    <div class="nebula nebula-2"></div>
+    <div class="nebula nebula-3"></div>
+
+    <!-- Progress Bar (Láser estilo Sci-Fi) -->
+    <div class="h-1 w-full bg-gray-800/50 absolute top-0 left-0 z-50 backdrop-blur-sm">
+        <div id="progress-bar" class="h-full bg-aws-orange transition-all duration-300" style="width: 0%; box-shadow: 0 0 10px #FF9900;"></div>
+    </div>
+
+    <!-- Slides Container -->
+    <div id="slider" class="relative w-full h-full p-8 md:p-16">
+
+        <!-- Slide 1: Capa -->
+        <div class="slide active">
+            <div class="text-center max-w-4xl mx-auto flex flex-col items-center">
+                <div class="flex items-center gap-6 mb-12 relative">
+                    <!-- Glow nas logos -->
+                    <div class="absolute inset-0 bg-aws-orange blur-3xl opacity-20 rounded-full"></div>
+                    
+                    <!-- Container Logo AWS -->
+                    <div class="w-28 h-28 shrink-0 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center z-10 p-4 border-2" style="border-color: rgba(0, 79, 146, 1); box-shadow: 0 0 20px rgba(0, 79, 146, 0.6);">
+                        <img src="https://aws-cloud-club-univali.s3.sa-east-1.amazonaws.com/imagens/logo-aws.png" alt="AWS" class="w-full h-full object-contain filter drop-shadow-md">
+                    </div>
+                    
+                    <i data-lucide="zap" class="w-8 h-8 shrink-0 text-white/50 z-10"></i>
+                    
+                    <!-- Container Logo UNIVALI (Fundo Branco Integrado) -->
+                    <div class="w-28 h-28 shrink-0 bg-white rounded-2xl flex items-center justify-center z-10 p-2 border-2" style="border-color: rgba(0, 79, 146, 1); box-shadow: 0 0 20px rgba(0, 79, 146, 0.6);">
+                        <img src="https://aws-cloud-club-univali.s3.sa-east-1.amazonaws.com/imagens/logo-univali-fundo.jpg" alt="Univali" class="w-full h-full object-contain rounded-xl">
+                    </div>
+                </div>
+                
+                <h1 class="text-5xl md:text-7xl font-black mb-4 tracking-tighter">
+                    Projeto <span class="aws-orange glow-text">AWS</span>
+                </h1>
+                <p class="text-2xl text-blue-200 mb-12 font-light tracking-wide">Proposta de Atuação Galáctica</p>
+                
+                <div class="glass-card p-6 px-16 inline-block relative overflow-hidden group">
+                    <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></div>
+                    <p class="text-sm font-bold aws-orange uppercase tracking-widest mb-1">Candidato</p>
+                    <h2 class="text-4xl font-bold">Henrique Zimermann</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: Apresentação Pessoal 1 -->
+        <div class="slide">
+            <div class="max-w-5xl mx-auto w-full">
+                <div class="flex items-center gap-4 mb-2">
+                    <div class="w-8 h-[2px] bg-aws-orange"></div>
+                    <h2 class="text-sm font-bold aws-orange uppercase tracking-widest">Missão 1: Perfil</h2>
+                </div>
+                <h3 class="text-4xl md:text-6xl font-black mb-12 text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400">Quem sou eu?</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="glass-card p-10">
+                        <div class="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mb-6 border border-white/10">
+                            <i data-lucide="user" class="w-8 h-8 aws-orange"></i>
+                        </div>
+                        <h4 class="text-2xl font-bold mb-4 text-white">Trajetória</h4>
+                        <ul class="text-blue-100/80 space-y-4 text-lg">
+                            <li class="flex items-start gap-3">
+                                <i data-lucide="chevron-right" class="w-4 h-4 aws-orange mt-1.5 shrink-0"></i> 
+                                <span>24 anos, último ano de <strong class="text-white">Ciência da Computação</strong></span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <i data-lucide="chevron-right" class="w-4 h-4 aws-orange mt-1.5 shrink-0"></i> 
+                                <span>Base: Univali</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <i data-lucide="chevron-right" class="w-4 h-4 aws-orange mt-1.5 shrink-0"></i> 
+                                <span>Foco: Cloud & DevOps</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="glass-card p-10">
+                        <div class="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mb-6 border border-white/10">
+                            <i data-lucide="compass" class="w-8 h-8 text-blue-400"></i>
+                        </div>
+                        <h4 class="text-2xl font-bold mb-4 text-white">Órbita Pessoal</h4>
+                        <p class="text-blue-100/80 text-lg mb-6 leading-relaxed">
+                            Fora dos terminais, eu exploro o universo da <strong class="text-white">Virtualização e Orquestração</strong> (Proxmox, Docker, Kubernetes e Cloud).
+                        </p>
+                        <div class="border-l-4 border-aws-orange pl-4">
+                            <p class="text-gray-400 text-base italic">
+                                "Isso me ensinou a ter uma visão sistêmica e a orquestrar recursos estrategicamente para resolver problemas complexos."
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Apresentação Pessoal 2 -->
+        <div class="slide">
+            <div class="max-w-5xl mx-auto w-full">
+                <div class="flex items-center gap-4 mb-2">
+                    <div class="w-8 h-[2px] bg-aws-orange"></div>
+                    <h2 class="text-sm font-bold aws-orange uppercase tracking-widest">Missão 1: Essência</h2>
+                </div>
+                <h3 class="text-4xl md:text-6xl font-black mb-12 text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400">Representação & Propósito</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="glass-card p-10 flex flex-col items-center text-center relative overflow-hidden">
+                        <div class="absolute inset-0 bg-aws-orange/5 blur-xl"></div>
+                        <div class="w-24 h-24 bg-black/40 rounded-full flex items-center justify-center mb-8 border border-aws-orange/50 glow-box relative z-10">
+                            <i data-lucide="network" class="w-10 h-10 aws-orange"></i>
+                        </div>
+                        <h4 class="text-2xl font-bold mb-4 text-white z-10">A Metáfora</h4>
+                        <p class="text-blue-100/80 text-lg z-10">
+                            Eu me vejo como um <strong class="text-white glow-text">Orquestrador</strong> (Kubernetes feelings!). 
+                            Minha função é organizar ideias, provisionar os recursos certos e garantir que cada projeto dos alunos opere com máxima eficiência.
+                        </p>
+                    </div>
+                    <div class="glass-card p-10 flex flex-col items-center text-center relative overflow-hidden">
+                        <div class="absolute inset-0 bg-blue-400/5 blur-xl"></div>
+                        <div class="w-24 h-24 bg-black/40 rounded-full flex items-center justify-center mb-8 border border-blue-400/50 relative z-10" style="box-shadow: 0 0 30px rgba(96, 165, 250, 0.2);">
+                            <i data-lucide="target" class="w-10 h-10 text-blue-400"></i>
+                        </div>
+                        <h4 class="text-2xl font-bold mb-4 text-white z-10">O Propósito</h4>
+                        <p class="text-blue-100/80 text-lg z-10">
+                            Quero ser a força gravitacional que atrai os alunos para a nuvem. Minha missão é diminuir o gap entre a teoria da sala de aula e a fronteira tecnológica que o mercado exige.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Case - Estratégia de Engajamento -->
+        <div class="slide">
+            <div class="max-w-6xl mx-auto w-full">
+                <div class="flex justify-between items-end mb-12">
+                    <div>
+                        <div class="flex items-center gap-4 mb-2">
+                            <div class="w-8 h-[2px] bg-blue-500"></div>
+                            <h2 class="text-sm font-bold text-blue-400 uppercase tracking-widest">Missão 2: O Case</h2>
+                        </div>
+                        <h3 class="text-4xl md:text-5xl font-black">1. Estratégia de Engajamento</h3>
+                    </div>
+                    <span class="text-8xl font-black text-white/5 hidden md:block">01</span>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="glass-card p-8 border-t-4 border-t-aws-orange relative group">
+                        <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-30 transition-opacity"><i data-lucide="share-2" class="w-20 h-20"></i></div>
+                        <h4 class="text-2xl font-bold mb-6 text-white flex items-center gap-3">
+                            <i data-lucide="radio" class="w-6 h-6 aws-orange"></i> Canais
+                        </h4>
+                        <ul class="text-blue-100/80 space-y-4 text-base relative z-10">
+                            <li class="flex items-start gap-3">
+                                <div class="mt-2 shrink-0 w-2 h-2 rounded-full bg-aws-orange"></div> 
+                                <span><strong>YouTube</strong> (Divulgação de conteúdo em vídeos curtos/tutoriais).</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <div class="mt-2 shrink-0 w-2 h-2 rounded-full bg-aws-orange"></div> 
+                                <span><strong>LinkedIn</strong> (Divulgação de materiais de apoio e artigos).</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="glass-card p-8 border-t-4 border-t-blue-500 relative group">
+                        <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-30 transition-opacity"><i data-lucide="megaphone" class="w-20 h-20"></i></div>
+                        <h4 class="text-2xl font-bold mb-6 text-white flex items-center gap-3">
+                            <i data-lucide="satellite" class="w-6 h-6 text-blue-400"></i> Abordagem
+                        </h4>
+                        <p class="text-blue-100/80 text-base leading-relaxed relative z-10">
+                            <strong class="text-white">"Cloud para Todos".</strong> A comunicação não terá gravidade: será leve, focada em resolver problemas práticos e feita para alunos de todos os níveis.
+                        </p>
+                    </div>
+
+                    <div class="glass-card p-8 border-t-4 border-t-purple-500 relative group">
+                        <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-30 transition-opacity"><i data-lucide="sparkles" class="w-20 h-20"></i></div>
+                        <h4 class="text-2xl font-bold mb-6 text-white flex items-center gap-3">
+                            <i data-lucide="star" class="w-6 h-6 text-purple-400"></i> Diferenciais
+                        </h4>
+                        <p class="text-blue-100/80 text-base leading-relaxed relative z-10">
+                            Foco em <strong>Comunicação</strong> com os alunos e aplicação das tecnologias AWS para resolver os buracos negros (dores reais) da nossa região.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Case - Plano de Ação -->
+        <div class="slide">
+            <div class="max-w-5xl mx-auto w-full">
+                <div class="flex justify-between items-end mb-12">
+                    <div>
+                        <div class="flex items-center gap-4 mb-2">
+                            <div class="w-8 h-[2px] bg-blue-500"></div>
+                            <h2 class="text-sm font-bold text-blue-400 uppercase tracking-widest">Missão 2: O Case</h2>
+                        </div>
+                        <h3 class="text-4xl md:text-5xl font-black">2. Plano de Voo (Ação)</h3>
+                    </div>
+                    <span class="text-8xl font-black text-white/5 hidden md:block">02</span>
+                </div>
+                
+                <div class="space-y-6">
+                    <div class="glass-card p-6 md:p-8 flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-8 hover:bg-white/5">
+                        <div class="bg-black/40 p-5 rounded-2xl border border-white/10 shrink-0"><i data-lucide="zap" class="w-8 h-8 aws-orange"></i></div>
+                        <div>
+                            <h4 class="text-2xl font-bold mb-2 text-white">Lançamentos (Eventos)</h4>
+                            <p class="text-blue-100/80 text-lg"><strong>Hands-on Labs</strong> mensais para pôr a mão na massa e <strong>Cloud Drops</strong> online (pílulas de 15 min) voltadas para a certificação Practitioner.</p>
+                        </div>
+                    </div>
+                    <div class="glass-card p-6 md:p-8 flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-8 hover:bg-white/5">
+                        <div class="bg-black/40 p-5 rounded-2xl border border-white/10 shrink-0"><i data-lucide="orbit" class="w-8 h-8 text-blue-400"></i></div>
+                        <div>
+                            <h4 class="text-2xl font-bold mb-2 text-white">Alianças Estelares (Parcerias)</h4>
+                            <p class="text-blue-100/80 text-lg">Envolver Centros Acadêmicos, Coordenação e Hubs de Inovação da Univali para garantir infraestrutura e máxima visibilidade.</p>
+                        </div>
+                    </div>
+                    <div class="glass-card p-6 md:p-8 flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-8 hover:bg-white/5">
+                        <div class="bg-black/40 p-5 rounded-2xl border border-white/10 shrink-0"><i data-lucide="radar" class="w-8 h-8 text-purple-400"></i></div>
+                        <div>
+                            <h4 class="text-2xl font-bold mb-2 text-white">Frequência do Radar</h4>
+                            <p class="text-blue-100/80 text-lg">Sinais digitais <strong>semanais</strong> com microdesafios e acoplagem presencial profunda a cada <strong>30-45 dias</strong>.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Case - Proposta de Valor -->
+        <div class="slide">
+            <div class="max-w-6xl mx-auto w-full">
+                <div class="flex justify-between items-end mb-16">
+                    <div>
+                        <div class="flex items-center gap-4 mb-2">
+                            <div class="w-8 h-[2px] bg-blue-500"></div>
+                            <h2 class="text-sm font-bold text-blue-400 uppercase tracking-widest">Missão 2: O Case</h2>
+                        </div>
+                        <h3 class="text-4xl md:text-5xl font-black">3. Proposta de Valor</h3>
+                    </div>
+                    <span class="text-8xl font-black text-white/5 hidden md:block">03</span>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center relative">
+                    <!-- Linha conectora de fundo (escondida no mobile) -->
+                    <div class="hidden md:block absolute top-12 left-20 right-20 h-[2px] bg-gradient-to-r from-transparent via-white/20 to-transparent z-0"></div>
+
+                    <div class="relative z-10">
+                        <div class="w-24 h-24 mx-auto bg-black/60 border border-white/20 backdrop-blur-md rounded-full flex items-center justify-center mb-6 glow-box">
+                            <i data-lucide="cpu" class="w-10 h-10 aws-orange"></i>
+                        </div>
+                        <h4 class="text-2xl font-bold mb-3 text-white">Por que embarcar?</h4>
+                        <p class="text-blue-100/80 text-base px-4">Para transformar as simulações teóricas da faculdade em constelações de soluções reais em produção.</p>
+                    </div>
+                    <div class="relative z-10">
+                        <div class="w-24 h-24 mx-auto bg-black/60 border border-aws-orange/50 backdrop-blur-md rounded-full flex items-center justify-center mb-6 relative" style="box-shadow: 0 0 40px rgba(255, 153, 0, 0.3);">
+                            <i data-lucide="gem" class="w-10 h-10 text-white"></i>
+                        </div>
+                        <h4 class="text-2xl font-bold mb-3 text-white">Os Artefatos</h4>
+                        <p class="text-blue-100/80 text-base px-4">Domínio de Hard Skills em Cloud, networking intergaláctico e créditos AWS para impulsionar TCCs e Projetos.</p>
+                    </div>
+                    <div class="relative z-10">
+                        <div class="w-24 h-24 mx-auto bg-black/60 border border-white/20 backdrop-blur-md rounded-full flex items-center justify-center mb-6 glow-box">
+                            <i data-lucide="trending-up" class="w-10 h-10 text-blue-400"></i>
+                        </div>
+                        <h4 class="text-2xl font-bold mb-3 text-white">O Impacto</h4>
+                        <p class="text-blue-100/80 text-base px-4">Velocidade de dobra na empregabilidade. Alunos que saem da universidade prontos para arquitetar o futuro.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Case - Pitch Final -->
+        <div class="slide">
+            <div class="max-w-5xl mx-auto w-full text-center">
+                <h3 class="text-4xl md:text-6xl font-black mb-10 leading-tight">
+                    Não vamos apenas <span class="aws-orange italic glow-text">observar</span> as estrelas. <br>Vamos <span class="text-blue-400 italic">construir</span> entre elas.
+                </h3>
+                
+                <div class="glass-card p-10 max-w-4xl mx-auto text-left relative overflow-hidden group">
+                    <div class="absolute top-0 left-0 w-2 h-full bg-gradient-to-b from-aws-orange to-purple-600"></div>
+                    <i data-lucide="quote" class="w-12 h-12 text-white/20 mb-6 group-hover:text-aws-orange transition-colors"></i>
+                    <p class="text-2xl text-blue-100/90 mb-8 leading-relaxed font-light">
+                        Imaginem o aluno do primeiro período, cheio de energia, mas que não sabe como tirar seu projeto da gravidade do "localhost". Meu objetivo é ser o guia de lançamento que eu gostaria de ter tido.
+                    </p>
+                    <p class="text-3xl font-bold text-white tracking-wide">
+                        Quem está pronto para decolar a tecnologia da Univali?
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Fim -->
+        <div class="slide">
+            <div class="text-center relative">
+                <!-- Efeito circular de fundo -->
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-aws-orange/20 blur-[100px] rounded-full z-0 pointer-events-none"></div>
+
+                <div class="relative z-10">
+                    <div class="w-24 h-24 mx-auto bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center mb-8 border border-white/20">
+                        <i data-lucide="check" class="w-12 h-12 aws-orange glow-text"></i>
+                    </div>
+                    <h1 class="text-5xl md:text-7xl font-black mb-6 tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white to-gray-400">Missão Concluída</h1>
+                    <p class="text-2xl text-blue-200 mb-16 font-light">Vamos juntos transformar a Univali.</p>
+                    
+                    <div class="flex flex-col md:flex-row justify-center items-center gap-6">
+                        <a href="https://linkedin.com/in/henrique-zimermann" target="_blank" class="glass-card px-8 py-4 flex items-center gap-4 hover:scale-105 transition-transform cursor-pointer">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 aws-orange"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+                            <span class="text-xl font-semibold">in/henrique-zimermann</span>
+                        </a>
+                        <a href="mailto:henrique.zimermann@outlook.com" class="glass-card px-8 py-4 flex items-center gap-4 hover:scale-105 transition-transform cursor-pointer">
+                            <i data-lucide="mail" class="w-6 h-6 text-blue-400"></i>
+                            <span class="text-xl font-semibold">henrique.zimermann@outlook.com</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Inicializar os Ícones
+        lucide.createIcons();
+
+        // Lógica de Navegação dos Slides
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        function updateSlider() {
+            slides.forEach((slide, index) => {
+                if (index === currentSlide) {
+                    slide.classList.add('active');
+                } else {
+                    slide.classList.remove('active');
+                }
+            });
+            
+            // Atualizar barra de progresso do laser
+            const progress = ((currentSlide + 1) / totalSlides) * 100;
+            document.getElementById('progress-bar').style.width = `${progress}%`;
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) {
+                currentSlide++;
+                updateSlider();
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateSlider();
+            }
+        }
+
+        // Navegação pelo Teclado
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === 'Space') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                prevSlide();
+            }
+        });
+
+        // Inicializar Primeiro Slide
+        updateSlider();
+    </script>
+</body>
+</html>
